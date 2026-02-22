@@ -11,7 +11,9 @@ class User(db.Model):
     college       = db.Column(db.String(150))
     branch        = db.Column(db.String(100))
     year          = db.Column(db.Integer)
+    role          = db.Column(db.String(20), default='student')  # ← ADD THIS
     created_at    = db.Column(db.DateTime, default=datetime.utcnow)
+
 
     profile       = db.relationship('UserProfile', backref='user', uselist=False)
     assessments   = db.relationship('Assessment', backref='user', lazy=True)
@@ -98,3 +100,18 @@ class Progress(db.Model):
     placement_readiness     = db.Column(db.Float, default=0)
     completed_roadmap_steps = db.Column(db.JSON, default=list)
     updated_at              = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class Question(db.Model):
+    __tablename__ = 'questions'
+    id         = db.Column(db.Integer, primary_key=True)
+    test_type  = db.Column(db.String(50), nullable=False)   # aptitude/technical/soft_skill
+    topic      = db.Column(db.String(100), nullable=False)
+    level      = db.Column(db.String(20), nullable=False)   # easy/medium/hard
+    question   = db.Column(db.Text, nullable=False)
+    option_a   = db.Column(db.String(255), nullable=False)
+    option_b   = db.Column(db.String(255), nullable=False)
+    option_c   = db.Column(db.String(255), nullable=False)
+    option_d   = db.Column(db.String(255), nullable=False)
+    answer     = db.Column(db.String(255), nullable=False)
+    source     = db.Column(db.String(100), default='manual') # indiabix/manual/csv
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

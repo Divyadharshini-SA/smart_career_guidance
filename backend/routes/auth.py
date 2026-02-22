@@ -31,10 +31,24 @@ def register():
 def login():
     data = request.get_json()
     user = User.query.filter_by(email=data.get('email')).first()
-    if not user or not bcrypt.check_password_hash(user.password_hash, data.get('password', '')):
+    if not user or not bcrypt.check_password_hash(user.password_hash, data.get('password','')):
         return jsonify({'error': 'Invalid credentials'}), 401
     token = create_access_token(identity=str(user.id))
-    return jsonify({'token': token, 'user_id': user.id, 'name': user.name}), 200
+    return jsonify({
+        'token'  : token,
+        'user_id': user.id,
+        'name'   : user.name,
+        'role'   : user.role        # ← ADD THIS
+    }), 200
+
+# @auth_bp.route('/login', methods=['POST'])
+# def login():
+#     data = request.get_json()
+#     user = User.query.filter_by(email=data.get('email')).first()
+#     if not user or not bcrypt.check_password_hash(user.password_hash, data.get('password', '')):
+#         return jsonify({'error': 'Invalid credentials'}), 401
+#     token = create_access_token(identity=str(user.id))
+#     return jsonify({'token': token, 'user_id': user.id, 'name': user.name}), 200
 
 @auth_bp.route('/me', methods=['GET'])
 @jwt_required()

@@ -12,33 +12,23 @@ export default function Login() {
 
   const handle = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-//   const submit = async e => {
-//     e.preventDefault();
-//     setLoading(true);
-//     try {
-//       const res = await API.post('/auth/login', form);
-//       login(res.data.token, { id: res.data.user_id, name: res.data.name });
-//       toast.success('Welcome back! 🎉');
-//       navigate('/');
-//     } catch (err) {
-//       toast.error(err.response?.data?.error || 'Login failed');
-//     } finally { setLoading(false); }
-//   };
-const submit = async e => {
+  const submit = async e => {
   e.preventDefault();
   setLoading(true);
   try {
     const res = await API.post('/auth/login', form);
-    console.log('Login response:', res.data);  // debug
-    const { token, user_id, name } = res.data;
-    login(token, { id: user_id, name: name });
-    console.log('Token saved:', localStorage.getItem('token'));  // debug
+    login(res.data.token, {
+      id  : res.data.user_id,
+      name: res.data.name,
+      role: res.data.role      // ← ADD THIS
+    });
     toast.success('Welcome back! 🎉');
     navigate('/');
   } catch (err) {
     toast.error(err.response?.data?.error || 'Login failed');
   } finally { setLoading(false); }
 };
+
   return (
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
